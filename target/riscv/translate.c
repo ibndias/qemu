@@ -55,6 +55,7 @@ typedef struct DisasContext {
        to reset this known value.  */
     int frm;
     uint8_t mtecontrol;
+    uint8_t mpkcontrol;
     bool ext_ifencei;
 } DisasContext;
 
@@ -126,6 +127,8 @@ static void gen_top_byte_ignore(DisasContext *s, TCGv_i64 dst,
         gen_helper_load_tag(loaded_tag, cpu_env, dst);
         /* compare tags and throw exception */
         gen_helper_check_tag(cpu_env, loaded_tag, shifted_tag);
+        //FIXME: THIS STILL TEMPLATE
+        gen_helper_check_mpk(cpu_env, loaded_tag, shifted_tag);
         /* Sign-extend from bit 55.  */
         tcg_gen_sextract_i64(dst, src, 0, 56);
 
@@ -809,6 +812,7 @@ static void riscv_tr_init_disas_context(DisasContextBase *dcbase, CPUState *cs)
     ctx->misa = env->misa;
     ctx->frm = -1;  /* unknown rounding mode */
     ctx->mtecontrol = env->mtecontrol;
+    ctx->mpkcontrol = env->mpkcontrol;
     ctx->ext_ifencei = cpu->cfg.ext_ifencei;
 }
 

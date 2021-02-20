@@ -249,6 +249,12 @@ void helper_check_tag(CPURISCVState *env, target_ulong tag1, target_ulong tag2)
     }
 }
 
+void helper_check_pk(CPURISCVState *env, target_ulong tag1, target_ulong tag2)
+{
+    if (tag1 != tag2) {
+        riscv_raise_exception(env, RISCV_EXCP_SECURE_MONITOR_FAULT, GETPC());
+    }
+}
 
 target_ulong helper_csrrw(CPURISCVState *env, target_ulong src,
         target_ulong csr)

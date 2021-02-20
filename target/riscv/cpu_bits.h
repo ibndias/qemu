@@ -116,6 +116,7 @@
 
 /* Custom user register */
 #define CSR_MTECONTROL      0x8c0
+#define CSR_MPKCONTROL      0x8c1
 
 /* FIXME: for test purposes only*/
 #define CSR_EXIT            0x8c3

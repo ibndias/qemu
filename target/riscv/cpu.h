@@ -123,7 +123,8 @@ struct CPURISCVState {
 
     /* FIXME: Special user mode register to control MTE feature */
     target_ulong mtecontrol;
-
+    /* FIXME: Special user mode register to control MPK feature */
+    target_ulong mpkcontrol;
     /*
      * CAUTION! Unlike the rest of this struct, mip is accessed asynchonously
      * by I/O threads. It should be read with atomic_read. It should be updated

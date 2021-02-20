@@ -205,6 +205,23 @@ static int write_mtecontrol(CPURISCVState *env, int csrno, target_ulong val)
     return 0;
 }
 
+/* FIXME: functions to access user mode register which controls MPK feature */
+static int read_mpkcontrol(CPURISCVState *env, int csrno, target_ulong *val)
+{
+    *val = env->mpkcontrol;
+    return 0;
+}
+
+static int write_mpkcontrol(CPURISCVState *env, int csrno, target_ulong val)
+{
+    /* flush translation cache */
+    if (val != env->mpkcontrol) {
+        tb_flush(env_cpu(env));
+    }
+    env->mpkcontrol = val;
+    return 0;
+}
+
 /* User Timers and Counters */
 static int read_instret(CPURISCVState *env, int csrno, target_ulong *val)
 {
@@ -905,6 +922,7 @@ static riscv_csr_operations csr_ops[CSR_TABLE_SIZE] = {
 
     /* User Timers and Counters */
     [CSR_MTECONTROL] =          { any,  read_mtecontrol,  write_mtecontrol  },
+    [CSR_MPKCONTROL] =          { any,  read_mpkcontrol,  write_mpkcontrol  },
     [CSR_CYCLE] =               { ctr,  read_instret                        },
     [CSR_INSTRET] =             { ctr,  read_instret                        },
 #if defined(TARGET_RISCV32)
