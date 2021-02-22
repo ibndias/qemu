@@ -27,6 +27,7 @@
 #include "exec/exec-all.h"
 #include "exec/cpu_ldst.h"
 #include "exec/ram_addr.h"
+#include "qemu/qemu-print.h"
 
 #define LOG2_TAG_GRANULE 4
 #define TAG_GRANULE      (1 << LOG2_TAG_GRANULE)
@@ -249,11 +250,32 @@ void helper_check_tag(CPURISCVState *env, target_ulong tag1, target_ulong tag2)
     }
 }
 
+#define BitVal(data, y) ((data >> y) & 1)     //Read bit value
+//Read Acces Disable Bit
+static int readAD(target_ulong preg, target_ulong index)
+{
+    index = 15 - index;
+    return BitVal(preg, ((index * 2) + 1));
+}
+/*
+//Read Write Disable Bit
+static int readWD(target_ulong preg, target_ulong index)
+{
+    index = 15 - index;
+    return BitVal(preg, index * 2);
+}
+*/
 void helper_check_pk(CPURISCVState *env, target_ulong tag1, target_ulong tag2)
 {
-    if (tag1 != tag2) {
+    // Check if mpk custom register value is same with provided/shifted tag
+    
+    qemu_printf("HOW %d\n", readAD(env->mpkcontrol, tag2));
+    if(readAD(env->mpkcontrol, tag2))
+    //if(0)
+    {
         riscv_raise_exception(env, RISCV_EXCP_SECURE_MONITOR_FAULT, GETPC());
     }
+    
 }
 
 target_ulong helper_csrrw(CPURISCVState *env, target_ulong src,

@@ -125,10 +125,10 @@ static void gen_top_byte_ignore(DisasContext *s, TCGv_i64 dst,
         tcg_gen_sextract_i64(dst, src, 0, 56);
         /* load tag from memory*/
         gen_helper_load_tag(loaded_tag, cpu_env, dst);
+        //FIXME: THIS STILL TEMPLATE
+        gen_helper_check_pk(cpu_env, loaded_tag, shifted_tag);
         /* compare tags and throw exception */
         gen_helper_check_tag(cpu_env, loaded_tag, shifted_tag);
-        //FIXME: THIS STILL TEMPLATE
-        gen_helper_check_mpk(cpu_env, loaded_tag, shifted_tag);
         /* Sign-extend from bit 55.  */
         tcg_gen_sextract_i64(dst, src, 0, 56);
 
