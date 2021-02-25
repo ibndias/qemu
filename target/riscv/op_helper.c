@@ -268,10 +268,9 @@ static int readWD(target_ulong preg, target_ulong index)
 void helper_check_pk(CPURISCVState *env, target_ulong tag1, target_ulong tag2)
 {
     // Check if mpk custom register value is same with provided/shifted tag
-    
-    qemu_printf("HOW %d\n", readAD(env->mpkcontrol, tag2));
+    //qemu_printf("HOW %d\n", readAD(env->mpkcontrol, tag2));
+    //FIXME: Add check PK check
     if(readAD(env->mpkcontrol, tag2))
-    //if(0)
     {
         riscv_raise_exception(env, RISCV_EXCP_SECURE_MONITOR_FAULT, GETPC());
     }
