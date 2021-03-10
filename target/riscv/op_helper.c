@@ -251,26 +251,38 @@ void helper_check_tag(CPURISCVState *env, target_ulong tag1, target_ulong tag2)
 }
 
 #define BitVal(data, y) ((data >> y) & 1)     //Read bit value
+
 //Read Acces Disable Bit
 static int readAD(target_ulong preg, target_ulong index)
 {
     index = 15 - index;
     return BitVal(preg, ((index * 2) + 1));
 }
-/*
 //Read Write Disable Bit
 static int readWD(target_ulong preg, target_ulong index)
 {
     index = 15 - index;
     return BitVal(preg, index * 2);
 }
-*/
-void helper_check_pk(CPURISCVState *env, target_ulong tag1, target_ulong tag2)
+
+void helper_check_pk_access(CPURISCVState *env, target_ulong tag)
 {
     // Check if mpk custom register value is same with provided/shifted tag
-    //qemu_printf("HOW %d\n", readAD(env->mpkcontrol, tag2));
-    //FIXME: Add check PK check
-    if(readAD(env->mpkcontrol, tag2))
+    qemu_printf("AD %02X\n", readAD(env->mpkcontrol, tag));
+     //FIXME: Test me! Already. Really? Yes. Ok test the WD.
+    if(readAD(env->mpkcontrol, tag))
+    {
+        riscv_raise_exception(env, RISCV_EXCP_SECURE_MONITOR_FAULT, GETPC());
+    }
+    
+}
+
+void helper_check_pk_write(CPURISCVState *env, target_ulong tag)
+{
+    // Check if mpk custom register value is same with provided/shifted tag
+    qemu_printf("WD %02X\n", readWD(env->mpkcontrol, tag));
+    //FIXME: Test me!
+    if(readWD(env->mpkcontrol, tag))
     {
         riscv_raise_exception(env, RISCV_EXCP_SECURE_MONITOR_FAULT, GETPC());
     }

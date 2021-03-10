@@ -28,6 +28,7 @@
 
 #include "exec/translator.h"
 #include "exec/log.h"
+#include "qemu/qemu-print.h"
 
 #include "instmap.h"
 
@@ -125,8 +126,16 @@ static void gen_top_byte_ignore(DisasContext *s, TCGv_i64 dst,
         tcg_gen_sextract_i64(dst, src, 0, 56);
         /* load tag from memory*/
         gen_helper_load_tag(loaded_tag, cpu_env, dst);
-        //FIXME: THIS STILL TEMPLATE
-        gen_helper_check_pk(cpu_env, loaded_tag, shifted_tag);
+        //FIXME: Differentiate load and store
+        qemu_printf("S->OPCODE %010X\n", s->opcode);
+        
+        if((s->opcode & OPC_RISC_STORE) == OPC_RISC_STORE)
+        {   gen_helper_check_pk_write(cpu_env, shifted_tag);
+        }
+        if((s->opcode & OPC_RISC_LOAD) == OPC_RISC_LOAD)
+        {   gen_helper_check_pk_access(cpu_env, shifted_tag);
+        }
+        
         /* compare tags and throw exception */
         gen_helper_check_tag(cpu_env, loaded_tag, shifted_tag);
         /* Sign-extend from bit 55.  */
