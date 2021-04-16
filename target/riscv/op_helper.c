@@ -268,7 +268,7 @@ static int readWD(target_ulong preg, target_ulong index)
 void helper_check_pk_access(CPURISCVState *env, target_ulong tag)
 {
     // Check if mpk custom register value is same with provided/shifted tag
-    qemu_printf("AD %02X\n", readAD(env->mpkcontrol, tag));
+    //qemu_printf("AD %02X\n", readAD(env->mpkcontrol, tag));
      //FIXME: Test me! Already. Really? Yes. Ok test the WD.
     if(readAD(env->mpkcontrol, tag))
     {
@@ -280,7 +280,7 @@ void helper_check_pk_access(CPURISCVState *env, target_ulong tag)
 void helper_check_pk_write(CPURISCVState *env, target_ulong tag)
 {
     // Check if mpk custom register value is same with provided/shifted tag
-    qemu_printf("WD %02X\n", readWD(env->mpkcontrol, tag));
+    //qemu_printf("WD %02X\n", readWD(env->mpkcontrol, tag));
     //FIXME: Test me!
     if(readWD(env->mpkcontrol, tag))
     {
